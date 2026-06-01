@@ -45,7 +45,7 @@ Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project tem
 
 ## 🛠️ Configuration Settings
 
-You can fully customize your compilation targets using standard CMake options. These can be explicitly injected via command line interface arguments (`-D<OPTION>=<ON|OFF>`) or modified with a visual suite like `ccmake`.
+You can fully customize your compilation targets using cmake/StandardSettings.cmake file. These can be explicitly injected via command line interface arguments (`-D<OPTION>=<ON|OFF>`) or modified with a visual suite like `ccmake`.
 
 | CMake Option | Default | Purpose |
 | --- | --- | --- |
@@ -53,9 +53,9 @@ You can fully customize your compilation targets using standard CMake options. T
 | `PersonalProject_BUILD_HEADERS_ONLY` | `OFF` | Configures an `INTERFACE` target ignoring all source implementations.|
 | `PersonalProject_BUILD_SHARED` | `OFF` | Compiles a shared binary file (`.so`/`.dll`/`.dylib`) with hidden symbol exposure defaults.|
 | `PersonalProject_ENABLE_UNIT_TESTING` | `OFF` | Enables GoogleTest discovery layers and compiles tracking test frameworks.|
-| `PersonalProject_ENABLE_VCPKG` | `ON` | Injects local Vcpkg system automation hooks.|
 | `PersonalProject_VERBOSE_OUTPUT` | `ON` | Prints full internal source, header, and path discovery lists during generation.|
 | `PersonalProject_WARNINGS_AS_ERRORS` | `OFF` | Enforces strict compiler logic checking by treating warnings as errors.|
+| `ENABLE_VCPKG` | `ON` | Injects local Vcpkg system automation hooks. (note this is available in cmake/Vcpkg.cmake)|
 
 ---
 

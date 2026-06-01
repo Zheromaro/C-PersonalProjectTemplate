@@ -31,9 +31,6 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 string(APPEND CMAKE_C_FLAGS_RELEASE " -O2")
 
-# ---- Package managers ----
-option(${PROJECT_NAME}_ENABLE_VCPKG       "Enable Vcpkg package manager." ON)
-
 # ---- Unit testing ----
 option(${PROJECT_NAME}_ENABLE_UNIT_TESTING "Enable unit tests from /test subfolder." OFF)
 option(${PROJECT_NAME}_USE_GTEST           "Use GoogleTest for unit tests." ON)
