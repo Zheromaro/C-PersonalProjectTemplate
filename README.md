@@ -1,4 +1,4 @@
-# C-PersonalProjectTemplet
+# C-PersonalProjectTemplate
 
 Welcome to **C-PersonalProjectTemplet**, a modern, cross-platform C project template. This layout is designed to scale gracefully from lightweight command-line applications to modular, production-ready static, shared, or header-only libraries. It features completely automated dependency management via Vcpkg, traditional vendor-library auto-discovery, and a C++17-powered GoogleTest environment to thoroughly exercise your C codebase.
 
