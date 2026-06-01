@@ -1,12 +1,13 @@
 # C-PersonalProjectTemplate
 
-Welcome to **C-PersonalProjectTemplet**, a modern, cross-platform C project template. This layout is designed to scale gracefully from lightweight command-line applications to modular, production-ready static, shared, or header-only libraries. It features completely automated dependency management via Vcpkg, traditional vendor-library auto-discovery, and a C++17-powered GoogleTest environment to thoroughly exercise your C codebase.
+Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project template. This layout is designed to scale gracefully from lightweight command-line applications to modular, production-ready static, shared, or header-only libraries. It features completely automated dependency management via Vcpkg, traditional vendor-library auto-discovery, and a C++17-powered GoogleTest environment to thoroughly exercise your C codebase.
 
 ---
 
 ## 🚀 Key Features
 
 * **Flexible Build Strategy:** Seamlessly toggle between building an **Executable**, a **Static Library**, a **Shared Library**, or a **Header-Only Library** via simple configuration flags.
+* **Multi-Compiler Support:** Effortlessly switch between `gcc` and `clang` compiler toolchains directly via the `Makefile`.
 * **Zero-Setup Package Management:** Automatically downloads, bootstraps, and links an isolated, project-local instance of **Vcpkg** running in **Manifest Mode**.
 * **Automatic Subdirectory Vendor Scans:** Drop pre-built binaries or external source packages into the `libs/` folder for instant header and library linkage auto-discovery.
 * **Isolated Testing Framework:** Separates test build paths out into a unique `_LIB` architecture so you can unit test your backend logic using **GoogleTest (C++17)** without conflicting with your application's operational `main.c`.
@@ -67,21 +68,18 @@ The included `Makefile` automates setting target variables for common workflows.
 * **Compile Local App (Debug Mode):**
 ```bash
 make build
-
 ```
 
 
 * **Compile Local App (Clean Optimization Release):**
 ```bash
 make release
-
 ```
 
 
 * **Build and Instantly Launch Executable:**
 ```bash
 make brun
-
 ```
 
 
@@ -91,23 +89,19 @@ make brun
 * **Compile Static Library Target (`.a` / `.lib`):**
 ```bash
 make lib_static
-
 ```
 
 
 * **Compile Shared Library Target (`.so` / `.dll` / `.dylib`):**
 ```bash
 make lib_shared
-
 ```
 
 
 * **Expose Pure Interfaced Header Framework:**
 ```bash
 make lib_header_only
-
 ```
-
 
 
 ### Workspace Cleanliness
@@ -117,7 +111,6 @@ make lib_header_only
 
 ```bash
 make clean
-
 ```
 
 
@@ -126,10 +119,26 @@ make clean
 
 ```bash
 make clean_all
+```
 
+### Selecting a Compiler
+
+* **Quick Test:** By default, the pipeline utilizes gcc. You can explicitly swap the underlying compiler toolchain by passing the COMPILER variable to any build or library target:
+
+
+```bash
+make build COMPILER=clang
+make build COMPILER=gcc
 ```
 
 
+* **Setting the default:** You can set the default compiler by modifying the `COMPILER` variable in the Makefile.
+
+
+```Makefile
+# Select Compiler gcc/clang
+COMPILER ?= gcc
+```
 
 ---
 
@@ -155,7 +164,6 @@ This template uses isolated workspace integration. To add packages, simply creat
 
 ```bash
 make vcpkg_update
-
 ```
 
 ### Method B: Manual Assembly Drops (`libs/`)
@@ -183,19 +191,16 @@ Unit tests are managed via C++17 wrappers built over GoogleTest. When test gener
 * **Run via CTest Wrapper:**
 ```bash
 make test_ctest
-
 ```
 
 
 * **Run Executables Directly with Color Support:**
 ```bash
 make test_direct
-
 ```
 
 
 * **Target a Specific Isolated Test Folder Suite:**
 ```bash
 make test_dir DIR=example_suite
-
 ```

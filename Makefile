@@ -1,5 +1,5 @@
 .PHONY: help clean clean_all build rebuild release lib_static lib_shared \
-        run brun test_ctest test_direct test_dir vcpkg_update
+        lib_header_only run brun test_ctest test_direct test_dir vcpkg_update
 
 .DEFAULT_GOAL := help
 
@@ -10,11 +10,18 @@ PROJECT_NAME := PersonalProject
 CMAKE_OPT_PREFIX := $(PROJECT_NAME)
 BROWSER := python3 -c "$$BROWSER_PYSCRIPT"
 INSTALL_LOCATION := ~/.local
+# Select Compiler gcc/clang
+COMPILER ?= gcc
 
-# cmake/Vcpkg.cmake handles the toolchain for vcpkg automatically.
-
-export CC ?= gcc
-export CXX ?= g++
+ifeq ($(COMPILER),clang)
+  export CC := clang
+  export CXX := clang++
+else ifeq ($(COMPILER),gcc)
+  export CC := gcc
+  export CXX := g++
+else
+  $(error Unsupported COMPILER="$(COMPILER)". Use "gcc" or "clang")
+endif
 export CFLAGS ?= -Wno-error=override-init
 
 define BROWSER_PYSCRIPT
@@ -63,13 +70,14 @@ clean_all: ## Clean the entire build directory (including vcpkg)
 # ==========================================================
 build: ## Build the project in DEBUG mode (no tests, no optimizations)
 	cmake -B build \
-	      -DCMAKE_C_COMPILER=/usr/bin/gcc \
-	      -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
-	      -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=ON \
-	      -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=OFF \
-		  -D$(CMAKE_OPT_PREFIX)_BUILD_SHARED=OFF \
-	      -D$(CMAKE_OPT_PREFIX)_ENABLE_UNIT_TESTING=OFF \
-	      -DCMAKE_BUILD_TYPE=Debug
+            -DCMAKE_C_COMPILER=$(CC) \
+            -DCMAKE_CXX_COMPILER=$(CXX) \
+            -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
+            -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=ON \
+            -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=OFF \
+            -D$(CMAKE_OPT_PREFIX)_BUILD_SHARED=OFF \
+            -D$(CMAKE_OPT_PREFIX)_ENABLE_UNIT_TESTING=OFF \
+            -DCMAKE_BUILD_TYPE=Debug
 	cmake --build build --config Debug
 
 rebuild: ## Clean and rebuild the project in DEBUG mode
@@ -78,8 +86,9 @@ rebuild: ## Clean and rebuild the project in DEBUG mode
 
 release: clean_all ## Clean and rebuild for release in RELEASE mode
 	cmake -B build \
-	      -DCMAKE_C_COMPILER=/usr/bin/gcc \
-		  -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
+	      -DCMAKE_C_COMPILER=$(CC) \
+	      -DCMAKE_CXX_COMPILER=$(CXX) \
+	      -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=ON \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=OFF \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_SHARED=OFF \
@@ -93,7 +102,8 @@ release: clean_all ## Clean and rebuild for release in RELEASE mode
 
 lib_static: ## Build as a STATIC library in DEBUG mode
 	cmake -B build \
-	      -DCMAKE_C_COMPILER=/usr/bin/gcc \
+	      -DCMAKE_C_COMPILER=$(CC) \
+	      -DCMAKE_CXX_COMPILER=$(CXX) \
 	      -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=OFF \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=OFF \
@@ -104,7 +114,8 @@ lib_static: ## Build as a STATIC library in DEBUG mode
 
 lib_shared: ## Build as a SHARED library in DEBUG mode
 	cmake -B build \
-	      -DCMAKE_C_COMPILER=/usr/bin/gcc \
+	      -DCMAKE_C_COMPILER=$(CC) \
+	      -DCMAKE_CXX_COMPILER=$(CXX) \
 	      -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=OFF \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=OFF \
@@ -115,7 +126,8 @@ lib_shared: ## Build as a SHARED library in DEBUG mode
 
 lib_header_only: ## Build as a HEADER-ONLY library
 	cmake -B build \
-	      -DCMAKE_C_COMPILER=/usr/bin/gcc \
+	      -DCMAKE_C_COMPILER=$(CC) \
+	      -DCMAKE_CXX_COMPILER=$(CXX) \
 	      -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_EXECUTABLE=OFF \
 	      -D$(CMAKE_OPT_PREFIX)_BUILD_HEADERS_ONLY=ON \
