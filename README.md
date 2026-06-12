@@ -12,7 +12,7 @@ Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project tem
 * **Automatic Subdirectory Vendor Scans:** Drop pre-built binaries or external source packages into the `libs/` folder for instant header and library linkage auto-discovery.
 * **Isolated Testing Framework:** Separates test build paths out into a unique `_LIB` architecture so you can unit test your backend logic using **GoogleTest (C++17)** without conflicting with your application's operational `main.c`.
 * **Out-of-Source Build Guardrail:** Hard blocks dirty in-source builds to maintain a pristine workspace layout.
-* **Developer Pipeline Wrapper:** Includes a production-ready `Makefile` providing quick keyboard mappings for all compilation, deployment, and testing steps.
+* **Developer Pipeline Wrapper:** Includes a production-ready `Makefile` providing quick make commands for all compilation, deployment, and testing steps.
 
 ---
 
@@ -49,10 +49,10 @@ You can fully customize your compilation targets using cmake/StandardSettings.cm
 
 | CMake Option | Default | Purpose |
 | --- | --- | --- |
-| `PersonalProject_BUILD_EXECUTABLE` | `ON` | Builds the project as a runnable application using `src/main.c`.|
-| `PersonalProject_BUILD_HEADERS_ONLY` | `OFF` | Configures an `INTERFACE` target ignoring all source implementations.|
-| `PersonalProject_BUILD_SHARED` | `OFF` | Compiles a shared binary file (`.so`/`.dll`/`.dylib`) with hidden symbol exposure defaults.|
-| `PersonalProject_ENABLE_UNIT_TESTING` | `OFF` | Enables GoogleTest discovery layers and compiles tracking test frameworks.|
+| `PersonalProject_BUILD_TYPE` | `"executable"` | Sets the target build mode. Must be one of: `executable`, `static`, `shared`, or `header-only`. |
+| `PersonalProject_ENABLE_UNIT_TESTING` | `OFF` | Enables unit tests from the `/test` subfolder. |
+| `PersonalProject_USE_GTEST` | `ON` | Uses GoogleTest for unit tests (requires testing to be enabled). |
+| `PersonalProject_USE_GOOGLE_MOCK` | `OFF` | Uses GoogleMock for unit tests alongside GoogleTest. |
 | `PersonalProject_VERBOSE_OUTPUT` | `ON` | Prints full internal source, header, and path discovery lists during generation.|
 | `PersonalProject_WARNINGS_AS_ERRORS` | `OFF` | Enforces strict compiler logic checking by treating warnings as errors.|
 | `ENABLE_VCPKG` | `ON` | Injects local Vcpkg system automation hooks. (note this is available in cmake/Vcpkg.cmake)|
@@ -196,7 +196,7 @@ make test_ctest
 
 * **Run Executables Directly with Color Support:**
 ```bash
-make test_direct
+make test_gtest
 ```
 
 
