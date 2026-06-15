@@ -1,11 +1,11 @@
 {
-  "version": 2,
+  "version": 1,
   "configurePresets": [
     {
       "name": "default",
       "inherits": "vcpkg",
       "environment": {
-        "VCPKG_ROOT": "/home/zahrawi/Projects/EnvironmentDependencies/vcpkg"
+        "VCPKG_ROOT": "${sourceDir}/build/vcpkg"
       }
     }
   ]
