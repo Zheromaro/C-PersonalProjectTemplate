@@ -116,7 +116,7 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}"
 )
 
-if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
+if(${PROJECT_NAME}_BUILD_TYPE STREQUAL "executable" AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
   set_target_properties(
     ${PROJECT_NAME}_LIB
     PROPERTIES
@@ -136,15 +136,16 @@ endif()
 # Non-vcpkg external libraries
 include(cmake/ExternalLib.cmake)
 
-if(NOT ${PROJECT_NAME}_BUILD_HEADERS_ONLY)
+if(NOT ${PROJECT_NAME}_BUILD_TYPE STREQUAL "header-only")
   set(LINK_LIBS
     ${EXTERNAL_LIBS}
+    # Add pakages links here
   )
 
   target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
   target_include_directories(${PROJECT_NAME} PUBLIC ${EXTERNAL_LIBS_INCLUDE})
 
-  if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
+  if(${PROJECT_NAME}_BUILD_TYPE STREQUAL "executable" AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
     target_link_libraries(${PROJECT_NAME}_LIB PRIVATE ${LINK_LIBS})
     target_include_directories(${PROJECT_NAME}_LIB PUBLIC ${EXTERNAL_LIBS_INCLUDE})
   endif()
@@ -153,7 +154,7 @@ endif()
 # ==========================================================
 # 📚 Include Directories
 # ==========================================================
-if(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
+if(${PROJECT_NAME}_BUILD_TYPE STREQUAL "header-only")
   target_include_directories(
     ${PROJECT_NAME}
     INTERFACE
@@ -170,7 +171,7 @@ else()
       ${CMAKE_CURRENT_SOURCE_DIR}/src
   )
 
-  if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
+  if(${PROJECT_NAME}_BUILD_TYPE STREQUAL "executable" AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
     target_include_directories(
       ${PROJECT_NAME}_LIB
       PUBLIC
@@ -219,9 +220,7 @@ message(STATUS "")
 message(STATUS "====== ${PROJECT_NAME} Configuration Summary ======")
 message(STATUS "🔧 C Compiler:            ${CMAKE_C_COMPILER} (${CMAKE_C_COMPILER_ID})")
 message(STATUS "🔧 Build type:            ${CMAKE_BUILD_TYPE}")
-message(STATUS "⚙️ Executable:            ${${PROJECT_NAME}_BUILD_EXECUTABLE}")
-message(STATUS "📜 Headers-only:          ${${PROJECT_NAME}_BUILD_HEADERS_ONLY}")
-message(STATUS "📦 Shared library:        ${${PROJECT_NAME}_BUILD_SHARED}")
+message(STATUS "⚙️  Project type:          ${${PROJECT_NAME}_BUILD_TYPE}")
 message(STATUS "📦 Install prefix:        ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "🧪 Unit testing enabled:  ${${PROJECT_NAME}_ENABLE_UNIT_TESTING}")
 message(STATUS "=====================================================")

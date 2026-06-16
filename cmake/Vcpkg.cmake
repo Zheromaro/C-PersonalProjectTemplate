@@ -31,7 +31,7 @@ if(ENABLE_VCPKG AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE OR NOT EXISTS "${CMAKE_TOO
     message(STATUS "✅ vcpkg repository cloned.")
   endif()
 
-  # --- 2. Bootstrap vcpkg executable if missing ---
+  # --- 2. Bootstrap vcpkg ---
 
   if(EXISTS "${VCPKG_TOOLCHAIN_FILE}")
     set(CMAKE_TOOLCHAIN_FILE "${VCPKG_TOOLCHAIN_FILE}" CACHE FILEPATH "Vcpkg toolchain" FORCE)

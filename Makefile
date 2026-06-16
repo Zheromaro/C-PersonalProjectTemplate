@@ -20,11 +20,11 @@ INSTALL_LOCATION := ~/.local
 COMPILER ?= gcc
 
 ifeq ($(COMPILER),clang)
-  export CC := clang
-  export CXX := clang++
+  CC := clang
+  CXX := clang++
 else ifeq ($(COMPILER),gcc)
-  export CC := gcc
-  export CXX := g++
+  CC := gcc
+  CXX := g++
 else
   $(error Unsupported COMPILER="$(COMPILER)". Use "gcc" or "clang")
 endif
