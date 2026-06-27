@@ -16,7 +16,6 @@ if(ENABLE_VCPKG AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE OR NOT EXISTS "${CMAKE_TOO
   set(VCPKG_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "Vcpkg toolchain file")
 
   if(NOT EXISTS "${VCPKG_ROOT}")
-    # # --- 1. Clone vcpkg if missing ---
     file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
     message(STATUS "🌐 vcpkg not found. Cloning into ${VCPKG_ROOT}...")
     find_package(Git QUIET REQUIRED)
@@ -28,19 +27,16 @@ if(ENABLE_VCPKG AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE OR NOT EXISTS "${CMAKE_TOO
     if(NOT GIT_CLONE_RESULT EQUAL 0)
       message(FATAL_ERROR "❌ Failed to clone vcpkg.")
     endif()
-    message(STATUS "✅ vcpkg repository cloned.")
   endif()
-
-  # --- 2. Bootstrap vcpkg ---
 
   if(EXISTS "${VCPKG_TOOLCHAIN_FILE}")
     set(CMAKE_TOOLCHAIN_FILE "${VCPKG_TOOLCHAIN_FILE}" CACHE FILEPATH "Vcpkg toolchain" FORCE)
-    set(VCPKG_MANIFEST_MODE ON CACHE BOOL "Vcpkg manifest mode" FORCE)
-    # Explicitly set manifest dir to ensure vcpkg.json is found
-    set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Vcpkg manifest dir" FORCE)
+    set(VCPKG_MANIFEST_MODE ON CACHE BOOL "" FORCE)
     message(STATUS "🔗 Local Vcpkg toolchain active: ${CMAKE_TOOLCHAIN_FILE}")
   else()
     message(FATAL_ERROR "❌ Vcpkg toolchain file missing: ${VCPKG_TOOLCHAIN_FILE}")
   endif()
+  # Manifest dir now points to the vcpkg config folder
+  set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/cmake/Vcpkg" CACHE PATH "" FORCE)
 
 endif()

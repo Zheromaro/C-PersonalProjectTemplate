@@ -10,6 +10,7 @@ Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project tem
 * **Multi-Compiler Support:** Effortlessly switch between `gcc` and `clang` compiler toolchains directly via the `Makefile`.
 * **Zero-Setup Package Management:** Automatically downloads, bootstraps, and links an isolated, project-local instance of **Vcpkg** running in **Manifest Mode**.
 * **Automatic Subdirectory Vendor Scans:** Drop pre-built binaries or external source packages into the `libs/` folder for instant header and library linkage auto-discovery.
+* **Build-Time Asset Staging:** Automatically copies runtime assets from the `assets/` folder into the executable's output directory.
 * **Isolated Testing Framework:** Separates test build paths out into a unique `_LIB` architecture so you can unit test your backend logic using **GoogleTest (C++17)** without conflicting with your application's operational `main.c`.
 * **Out-of-Source Build Guardrail:** Hard blocks dirty in-source builds to maintain a pristine workspace layout.
 * **Developer Pipeline Wrapper:** Includes a production-ready `Makefile` providing quick make commands for all compilation, deployment, and testing steps.
@@ -19,12 +20,19 @@ Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project tem
 ## 📁 Project Structure
 
 ```text
+├── assets/                     # Runtime assets (images, fonts, audio, etc.)
 ├── cmake/
+│   ├── Assets.cmake            # Build-time asset copying logic
 │   ├── ExternalLib.cmake       # Scans and indexes the manual 'libs/' directory
 │   ├── SourcesAndHeaders.cmake # Auto-collects source and test files
 │   ├── StandardSettings.cmake  # Contains compiler configurations and options toggles
 │   ├── Utils.cmake             # Custom developer macros and functions
-│   └── Vcpkg.cmake             # Bootstraps local vcpkg instance inside build/
+│   └── Vcpkg/                  # Vcpkg integration workspace
+│       ├── CMakePresets.json
+│       ├── CMakeUserPresets.json
+│       ├── vcpkg.json
+│       ├── Vcpkg.cmake
+│       └── vcpkg-configuration.json
 ├── include/                    # Public API headers (.h)
 ├── libs/                       # Third-party manual binary drops (.a, .so, .dll, .lib)
 ├── src/                        # Implementation source files (.c)
@@ -34,11 +42,8 @@ Welcome to **C-PersonalProjectTemplate**, a modern, cross-platform C project tem
 │   └── example_suite/          # Individual test contexts written in C++
 │       └── test_main.cpp       # GoogleTest execution code
 ├── CMakeLists.txt              # Core orchestrated CMake script
-├── CMakePresets.json           # Shared build and configuration presets for IDEs and CLI
-├── CMakeUserPresets.json       # Local, machine-specific configuration overrides (e.g., local VCPKG_ROOT)
 ├── Makefile                    # Developer shortcut command dictionary
-├── vcpkg.json                  # Manifest file declaring external project dependencies (e.g., gtest)
-└── vcpkg-configuration.json    # Defines registry mappings and version baselines for vcpkg
+└── README.md
 ```
 
 ---
@@ -55,7 +60,7 @@ You can fully customize your compilation targets using cmake/StandardSettings.cm
 | `PersonalProject_USE_GOOGLE_MOCK` | `OFF` | Uses GoogleMock for unit tests alongside GoogleTest. |
 | `PersonalProject_VERBOSE_OUTPUT` | `ON` | Prints full internal source, header, and path discovery lists during generation.|
 | `PersonalProject_WARNINGS_AS_ERRORS` | `OFF` | Enforces strict compiler logic checking by treating warnings as errors.|
-| `ENABLE_VCPKG` | `ON` | Injects local Vcpkg system automation hooks. (note this is available in cmake/Vcpkg.cmake)|
+| `ENABLE_VCPKG` | `ON` | Injects local Vcpkg system automation hooks. (note this is available in cmake/Vcpkg/Vcpkg.cmake)|
 
 ---
 
@@ -148,7 +153,7 @@ This template provides two flexible paths for linking third-party dependencies:
 
 ### Method A: Local Manifest Management (Vcpkg)
 
-This template uses isolated workspace integration. To add packages, simply create a `vcpkg.json` file in the root directory.
+This template uses isolated workspace integration. To add packages, simply modify `vcpkg.json` file in `cmake/Vcpkg/` directory.
 
 1. When CMake configures the environment, it clones the core package repository down to `build/vcpkg`.
 
@@ -182,6 +187,24 @@ The automated script inside `ExternalLib.cmake` recursively crawls these target 
 
 ---
 
+## 🎨 Working with Assets
+
+Place any assets (images, fonts, audio etc.) inside the assets/ directory at the project root. During every build, cmake/Assets.cmake automatically stages these files into the executable's output directory via a post-build copy command.
+
+```text
+assets/
+├── textures/
+├── fonts/
+└── config.json
+```
+
+The assets will be copied to:
+```text
+build/bin/assets/
+```
+Note: The asset copy step is conditional. If the assets/ directory doesnot exist, the build proceeds without it.
+
+---
 ## 🧪 Executing Unit Tests
 
 Unit tests are managed via C++17 wrappers built over GoogleTest. When test generation flags are enabled, the project builds an internal tracking library architecture (`PersonalProject_LIB`) matching your core source paths. This allows you to easily execute white-box tests directly on individual internal source components.

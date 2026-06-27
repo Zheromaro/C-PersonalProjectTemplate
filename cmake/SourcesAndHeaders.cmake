@@ -22,7 +22,7 @@ list(FILTER sources EXCLUDE REGEX ".*/main\\.c$")
 # ---- Headers ----
 file(GLOB_RECURSE headers
     CONFIGURE_DEPENDS
-    "${INCLUDE_DIR}/*.h"
+    "${INCLUDE_DIR}/*.(h|c)"
 )
 
 # ---- Test directories ----

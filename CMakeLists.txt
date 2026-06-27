@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 # ==========================================================
 # 📦 Package Managers (Vcpkg) must be included before project definition
 # ==========================================================
-include(cmake/Vcpkg.cmake)
+include(cmake/Vcpkg/Vcpkg.cmake)
 
 # ==========================================================
 # 🧩 Project details
@@ -24,6 +24,9 @@ message(STATUS "🔧 C Compiler ID: ${CMAKE_C_COMPILER_ID}")
 if(NOT CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
   message(WARNING "⚠️ Unsupported compiler ID: ${CMAKE_C_COMPILER_ID}. This project is tested with GCC and Clang only.")
 endif()
+
+# so the Code Editor can see all includes
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ==========================================================
 # ⚙️  Load custom project settings
@@ -47,7 +50,7 @@ endif()
 
 
 # ==========================================================
-# 📁 Source & Header Files
+# 📁 Source & Header Files + Assets
 # ==========================================================
 include(cmake/SourcesAndHeaders.cmake)
 message(STATUS "📂 Found project sources and headers")
@@ -103,6 +106,15 @@ if(${PROJECT_NAME}_VERBOSE_OUTPUT)
   foreach(header IN LISTS headers)
     verbose_message("* ${header}")
   endforeach()
+endif()
+
+# ==========================================================
+# 🎨 get Assets
+# ==========================================================
+
+include(cmake/Assets.cmake)
+if(EXISTS "${ASSETS_SOURCE_DIR}")
+  message(STATUS "📂 Found project sources and headers")
 endif()
 
 # ==========================================================
